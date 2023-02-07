@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-struct MyPoint
+/*struct MyPoint
 {
     double x = 0;
     double y = 0;
@@ -26,7 +26,7 @@ MyRectangle MoveRectangle(MyRectangle one, double offsetX, double offsetY)
     /*if (one.point.x < 0)
         one.point.x = 0;
     if (one.point.y < 0)
-        one.point.y = 0;*/
+        one.point.y = 0;*//*
 
     return one;
 }
@@ -41,10 +41,218 @@ MyRectangle ChangeSizeRectangle(MyRectangle one, int changeX = 0, int changeY = 
         one.height = 1;
 
     return one;
-}
+}*/
+
+struct Fraction
+{
+
+private:
+    friend void RightFraction(Fraction& fraction1)
+    {
+        // if numerator and denomenator equals
+        if (fraction1.numerator == fraction1.denominator && fraction1.numerator != 0 && fraction1.denominator != 0)
+        {
+            fraction1.numerator = 0;
+            fraction1.denominator = 0;
+            fraction1.totalInteger += 1;
+        }
+        if (fraction1.numerator > fraction1.denominator)
+        {
+            fraction1.totalInteger += fraction1.numerator / fraction1.denominator;
+            fraction1.numerator = fraction1.numerator % fraction1.denominator;
+        }
+        int reducedenominator = fraction1.denominator;
+        if (fraction1.denominator > 0)
+        {
+            while (reducedenominator > 0) {
+                if (fraction1.denominator % reducedenominator == 0 && fraction1.numerator % reducedenominator == 0)
+                {
+                    fraction1.numerator = fraction1.numerator / reducedenominator;
+                    fraction1.denominator = fraction1.denominator / reducedenominator;
+                    break;
+                }
+                reducedenominator--;
+            }
+        }
+    }
+    friend void UnRightFraction(Fraction& fraction1)
+    {
+        if (fraction1.totalInteger > 0)
+        {
+            fraction1.numerator += fraction1.totalInteger * fraction1.denominator;
+        }
+    }
+public:
+    int totalInteger;
+    int numerator;
+    int denominator;
+
+    bool operator!=(Fraction fraction)
+    {
+        if (numerator == fraction.numerator && denominator == fraction.denominator)
+            return false;
+
+        return true;
+    }
+    friend Fraction operator+(Fraction fraction1, Fraction fraction2)
+    {
+        Fraction result;
+        if (fraction1.denominator == fraction2.denominator)
+        {
+            result.totalInteger = fraction1.totalInteger + fraction2.totalInteger;
+            result.numerator = fraction1.numerator + fraction2.numerator;
+            result.denominator = fraction1.denominator;
+        }
+        if (fraction1.denominator != fraction2.denominator)
+        {
+            if (fraction1.denominator > fraction2.denominator)
+            {
+                if (fraction1.denominator % fraction2.denominator == 0)
+                {
+                    fraction2.denominator* (fraction1.denominator / fraction2.denominator);
+                    fraction2.numerator* (fraction1.denominator / fraction2.denominator);
+                    result.totalInteger = fraction1.totalInteger + fraction2.totalInteger;
+                    result.numerator = fraction1.numerator + fraction2.numerator;
+                    result.denominator = fraction1.denominator;
+                }
+                else
+                {
+                    result.totalInteger = fraction1.totalInteger + fraction2.totalInteger;
+                    result.numerator = fraction1.numerator * fraction2.denominator + fraction2.numerator * fraction1.denominator;
+                    result.denominator = fraction1.denominator * fraction2.denominator;
+                }
+            }
+            else
+            {
+                if (fraction2.denominator % fraction1.denominator == 0)
+                {
+                    fraction1.denominator* (fraction2.denominator / fraction1.denominator);
+                    fraction1.numerator* (fraction2.denominator / fraction1.denominator);
+                    result.totalInteger = fraction1.totalInteger + fraction2.totalInteger;
+                    result.numerator = fraction1.numerator + fraction2.numerator;
+                    result.denominator = fraction1.denominator;
+                }
+                else
+                {
+                    result.totalInteger = fraction1.totalInteger + fraction2.totalInteger;
+                    result.numerator = fraction1.numerator * fraction2.denominator + fraction2.numerator * fraction1.denominator;
+                    result.denominator = fraction1.denominator * fraction2.denominator;
+                }
+            }
+        }
+        RightFraction(result);     
+        
+
+        return result;
+
+    }
+
+    friend Fraction operator-(Fraction fraction1, Fraction fraction2)
+    {
+        Fraction result;
+        if (fraction1.denominator == fraction2.denominator)
+        {
+            result.totalInteger = fraction1.totalInteger - fraction2.totalInteger;
+            result.numerator = fraction1.numerator - fraction2.numerator;
+            result.denominator = fraction1.denominator;
+        }
+        if (fraction1.denominator != fraction2.denominator)
+        {
+            if (fraction1.denominator > fraction2.denominator)
+            {
+                if (fraction1.denominator % fraction2.denominator == 0)
+                {
+                    fraction2.denominator* (fraction1.denominator / fraction2.denominator);
+                    fraction2.numerator* (fraction1.denominator / fraction2.denominator);
+                    result.totalInteger = fraction1.totalInteger - fraction2.totalInteger;
+                    result.numerator = fraction1.numerator - fraction2.numerator;
+                    result.denominator = fraction1.denominator;
+                }
+                else
+                {
+                    result.totalInteger = fraction1.totalInteger - fraction2.totalInteger;
+                    result.numerator = fraction1.numerator * fraction2.denominator - fraction2.numerator * fraction1.denominator;
+                    result.denominator = fraction1.denominator * fraction2.denominator;
+                }                
+            }
+            else
+            {
+                if (fraction2.denominator % fraction1.denominator == 0)
+                {
+                    fraction1.denominator* (fraction2.denominator / fraction1.denominator);
+                    fraction1.numerator* (fraction2.denominator / fraction1.denominator);
+                    result.totalInteger = fraction1.totalInteger - fraction2.totalInteger;
+                    result.numerator = fraction1.numerator - fraction2.numerator;
+                    result.denominator = fraction1.denominator;
+                }
+                else
+                {
+                    result.totalInteger = fraction1.totalInteger - fraction2.totalInteger;
+                    result.numerator = fraction1.numerator * fraction2.denominator - fraction2.numerator * fraction1.denominator;
+                    result.denominator = fraction1.denominator * fraction2.denominator;
+                }                
+            }
+        }
+        if (result.totalInteger > 0 && result.numerator < 0)
+        {
+            result.totalInteger--;
+            result.numerator += result.denominator;
+        }
+        RightFraction(result);
+
+
+        return result;
+
+    }
+    friend Fraction operator*(Fraction fraction1, Fraction fraction2)
+    {
+        Fraction result;
+        
+        UnRightFraction(fraction1);
+        UnRightFraction(fraction2);
+
+        result.totalInteger = 0;
+        result.numerator = fraction1.numerator * fraction2.numerator;
+        result.denominator = fraction1.denominator * fraction2.denominator;
+        
+        RightFraction(result);
+
+        return result;
+
+    }
+    friend Fraction operator/(Fraction fraction1, Fraction fraction2)
+    {
+        Fraction result;
+
+        UnRightFraction(fraction1);
+        UnRightFraction(fraction2);
+
+        result.totalInteger = 0;
+        result.numerator = fraction1.numerator * fraction2.denominator;
+        result.denominator = fraction1.denominator * fraction2.numerator;
+
+        RightFraction(result);
+
+
+        return result;
+
+    }
+    friend std::ostream& operator <<(std::ostream& out, Fraction fraction)
+    {
+        if (fraction.totalInteger > 0)
+        { 
+            out << fraction.totalInteger << " " << fraction.numerator << "/" << fraction.denominator << "\n";
+        }
+        else
+        {
+            out << fraction.numerator << "/" << fraction.denominator << "\n";
+        }
+        return out;
+    }
+};
 int main()
 {
-    MyPoint newpoint;
+    /*MyPoint newpoint;
     newpoint.x = 5.3;
     newpoint.y = 3.2;
     MyPoint oldpoint;
@@ -59,7 +267,15 @@ int main()
     std::cout << rect.point.x << " " << rect.point.y;
     std::cout << "\n";
     rect = ChangeSizeRectangle(rect, 10, -5);
-    std::cout << rect.width << " " << rect.height;
+    std::cout << rect.width << " " << rect.height;*/
+
+    Fraction fraction{ 1,2,3 };
+    std::cout << fraction;
+    Fraction fraction2{ 2,5,2 };
+    std::cout << fraction2;
+    Fraction fraction3{ 0,0,0 };
+    fraction3 = fraction / fraction2;
+    std::cout << fraction3;
 
     return 0;
 }
